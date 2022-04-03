@@ -10,7 +10,14 @@ import java.lang.management.ThreadMXBean;
  * @Description:
  */
 public class MultiThread {
+    /**
+     * 程序启动的时候，就是启动了一个JVM进程，
+     * main 函数所在的线程就是这个进程中的一个线程，也称主线程。
+     */
     public static void main(String[] args) {
+        /**
+         * 线程是一个比进程更小的执行单位。一个进程在其执行的过程中可以产生多个线程。
+         */
         // 获取 Java 线程管理 MXBean
         ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
         // 不需要获取同步的 monitor 和 synchronizer 信息，仅获取线程和线程堆栈信息
