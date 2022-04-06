@@ -3,7 +3,12 @@ package com.hjxlog.basic;
 /**
  * @author Huang JX
  * @date 2022/4/5
- * @description 包装类的常量池技术，所有的包装类型，用equals()方法判断相等
+ * @description 包装类 的常量池技术，所有的包装类型，用equals()方法判断相等
+ * 总结：
+ * 1. Byte Short Integer Long 常量池范围：[-128,127]
+ * 2. Float Double 没有常量池技术，直接new Float()
+ * 3. Character 范围：[0,127]
+ * 4. Boolean 范围：[true,false]
  */
 public class ConstantPool {
     public static void main(String[] args) {
@@ -21,6 +26,8 @@ public class ConstantPool {
         Integer integer1 = 1;
         Integer integer2 = 1;
         System.out.println(integer1 == integer2); //true
+        System.out.println("integer1 - hashcode" + integer1.hashCode());
+        System.out.println("integer2 - hashcode" + integer2.hashCode());
         System.out.println(integer1.equals(integer2));//true
 
         System.out.println("=====float=====");
