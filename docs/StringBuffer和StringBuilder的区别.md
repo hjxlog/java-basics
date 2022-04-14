@@ -56,7 +56,7 @@ public class StringDemo {
 }
 ```
 
-简单说明：
+**简单说明：**
 
 开启主线程，``testStringBuilder()``和``testStringBuffer()``方法分别循环十次，每次新建500个线程，每个线程在字符串后面追加1，主线程休眠5秒，输出最后各自的长度。
 
@@ -69,9 +69,9 @@ stringBuffer长度5000
 
 可以看出StringBuilder长度不等于5000，这里面有线程安全问题。
 
-那么，StringBuilder为什么是线程不安全的？
-
 ## 三、StringBuilder为什么是线程不安全的？
+
+### 3.1 源码分析
 
 查看StringBuilder的append(str)方法源码：
 
@@ -154,8 +154,32 @@ private int hugeCapacity(int minCapacity) {
 }
 ```
 
-如果超过最大值，抛异常OutOfMemoryError，没有的话，判断是否大于Integer.MAX_VALUE 但是小于Integer.MAX_VALUE - 8，如果是的话，返回当前需要的容量，如果不是的话，返回Integer.MAX_VALUE - 8；
+如果超过最大值，抛异常OutOfMemoryError，没有的话，判断是否大于``Integer.MAX_VALUE ``但是小于``Integer.MAX_VALUE - 8``，如果是的话，返回当前需要的容量，如果不是的话，返回Integer.MAX_VALUE - 8；
 
 自此，扩容结束并赋值到新开辟的数组上。
 
-``count += len;``这行代码，如果有多个线程同时执行，预设本来的长度count=100，线程A加一次。
+### 3.2 数组越界问题
+
+在执行上面的例子的时候，容易出现一个错误，如下：
+
+```java
+Exception in thread "Thread-0" java.lang.ArrayIndexOutOfBoundsException
+	at java.lang.System.arraycopy(Native Method)
+	at java.lang.String.getChars(String.java:826)
+```
+
+也就是数组越界问题，举例如下：
+
+初始化``StringBuilder``的时候，char[]数组的长度为16，源码如下：
+
+```java
+public StringBuilder() {
+    super(16);
+}
+```
+
+hi,boy
+
+hi,girl
+
+``count += len;``这行代码，如果有两个线程A，B，本来的长度count=100，线程A加一次字符串"1"，长度变为101，B线程再加一次字符串"1"，长度变为102，这是理想的预设情况，没有问题。假如
